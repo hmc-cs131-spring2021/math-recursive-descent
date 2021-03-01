@@ -1,0 +1,15 @@
+{
+  "name": "CS 131",
+  "image": "harveymudd/cs131",
+  "settings": { 
+		"terminal.integrated.shell.linux": "/bin/zsh",
+    "haskell.hlintOn": false,
+    "editor.rulers": [90],
+  },
+  "extensions": [
+    "justusadam.language-haskell",
+    "eriksik2.vscode-ghci",
+    "haskell.haskell",
+    "hoovercj.haskell-linter"
+  ]
+}
