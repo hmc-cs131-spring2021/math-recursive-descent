@@ -4,12 +4,14 @@ Description  : Parser for the Math language
 
 Contributes a parser for the following grammar:
 
-   expr ::= factor + expr
-         |  factor - expr
-         |  factor * expr
-         |  factor / expr
-         |  factor
+   expr ::= term + expr
+         |  term - expr
+         |  term
 
+   term ::= factor * term
+         |  factor / term
+         |  factor
+         
    factor ::= n
            | (expr)
 -}
@@ -36,26 +38,34 @@ type ParserFunction = [Token] -> (Exp, [Token])
 
 expr :: ParserFunction
 expr tokens = 
-  case factor tokens of
+  case term tokens of
 
-    -- factor + expr
+    -- term + expr
     (left, CrossToken : tokens') -> 
       let (right, tokens'') = expr tokens' in 
         (BinOp left PlusOp right, tokens'')
 
-    -- factor - expr
+    -- term - expr
     (left, DashToken : tokens') -> 
       let (right, tokens'') = expr tokens' in 
         (BinOp left MinusOp right, tokens'')
 
-    -- factor * expr
+    -- term
+    result -> result
+
+
+term :: ParserFunction
+term tokens = 
+  case factor tokens of
+
+    -- factor * term
     (left, StarToken : tokens') -> 
-      let (right, tokens'') = expr tokens' in 
+      let (right, tokens'') = term tokens' in 
         (BinOp left TimesOp right, tokens'')
 
-    -- factor / expr
+    -- factor / term
     (left, SlashToken : tokens') -> 
-      let (right, tokens'') = expr tokens' in 
+      let (right, tokens'') = term tokens' in 
         (BinOp left DivOp right, tokens'')
 
     -- factor
